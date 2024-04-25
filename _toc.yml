@@ -1,0 +1,12 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+chapters:
+- file: Temperature_Forecasting_Statistical_Approach
+- file: Forecasting_Approaches
+- file: PyTS_Forecasting
+- file: Skforecast_Forecasting
+- file: Outlier_Imputation_Forecasting
+- file: Short_Long_Term_Forecasting

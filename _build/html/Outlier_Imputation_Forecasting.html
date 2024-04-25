@@ -1,0 +1,1493 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Forecasting Temperature with Outliers Imputation &#8212; Forecasting Temperature</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Outlier_Imputation_Forecasting';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Short-Long Term Forecasting Approaches" href="Short_Long_Term_Forecasting.html" />
+    <link rel="prev" title="Forecasting Temperature with Skforecast" href="Skforecast_Forecasting.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.avif" class="logo__image only-light" alt="Forecasting Temperature - Home"/>
+    <script>document.write(`<img src="_static/logo.avif" class="logo__image only-dark" alt="Forecasting Temperature - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Forecasting Temperature
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Temperature_Forecasting_Statistical_Approach.html"><strong>Temperature Forecasting: Statistical Approach</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Forecasting_Approaches.html"><strong>Time Series Forecasting: Machine Learning Approach</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="PyTS_Forecasting.html"><strong>Forecasting Temperature with <code class="docutils literal notranslate"><span class="pre">PyTS</span></code></strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Skforecast_Forecasting.html"><strong>Forecasting Temperature with <code class="docutils literal notranslate"><span class="pre">Skforecast</span></code></strong></a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><strong>Forecasting Temperature with Outliers Imputation</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="Short_Long_Term_Forecasting.html"><strong>Short-Long Term Forecasting Approaches</strong></a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/FabioScielzoOrtiz/Weather-Temperature-Forecasting" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/FabioScielzoOrtiz/Weather-Temperature-Forecasting/issues/new?title=Issue%20on%20page%20%2FOutlier_Imputation_Forecasting.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/Outlier_Imputation_Forecasting.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Forecasting Temperature with Outliers Imputation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements"><strong>Requirements</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data"><strong>Data</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conceptual-description"><strong>Conceptual description</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocessing-the-data"><strong>Preprocessing the data</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#daily-time-series"><strong>Daily time series</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting"><strong>Plotting</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#outlier-detection-and-imputation"><strong>Outlier detection and imputation</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization"><strong>Visualization</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inner-evaluation"><strong>Inner evaluation</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-the-data"><strong>Defining the data</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-outliers-methods"><strong>Defining outliers methods</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-inner-evaluation-to-the-top-5-models-obtained-in-pyts-chapter"><strong>Applying inner evaluation to the top-5 models obtained in <code class="docutils literal notranslate"><span class="pre">PyTS</span></code> chapter</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-the-best-model"><strong>Selecting the best model</strong></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="forecasting-temperature-with-outliers-imputation">
+<h1><strong>Forecasting Temperature with Outliers Imputation</strong><a class="headerlink" href="#forecasting-temperature-with-outliers-imputation" title="Link to this heading">#</a></h1>
+<p><strong>Main goal of the project:</strong></p>
+<blockquote>
+<div><p><em><strong>Forecasting temperature in a accurate way using a Machine Learning general approach.</strong></em></p>
+</div></blockquote>
+<p>This part of the project will be focused in the following forecasting approaches:</p>
+<ul class="simple">
+<li><p>Forecasting with outliers imputation.</p></li>
+</ul>
+<p>For each approach the best model will be found, applying ML evaluation techniques like cross Validation and hyper-parameter optimization.</p>
+<p><strong>Author:</strong> <em><strong>Fabio Scielzo Ortiz</strong></em></p>
+<section id="requirements">
+<h2><strong>Requirements</strong><a class="headerlink" href="#requirements" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span> 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">statsmodels.tsa.seasonal</span> <span class="kn">import</span> <span class="n">STL</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="kn">from</span> <span class="nn">statsmodels.tsa.stattools</span> <span class="kn">import</span> <span class="n">adfuller</span>
+<span class="kn">from</span> <span class="nn">statsmodels.graphics.tsaplots</span> <span class="kn">import</span> <span class="n">plot_acf</span><span class="p">,</span> <span class="n">plot_pacf</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_absolute_error</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">optuna</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">skforecast.ForecasterAutoreg</span> <span class="kn">import</span> <span class="n">ForecasterAutoreg</span> 
+<span class="kn">from</span> <span class="nn">skforecast.ForecasterAutoregDirect</span> <span class="kn">import</span> <span class="n">ForecasterAutoregDirect</span>
+<span class="kn">from</span> <span class="nn">skforecast.ForecasterAutoregMultiVariate</span> <span class="kn">import</span> <span class="n">ForecasterAutoregMultiVariate</span>
+<span class="kn">from</span> <span class="nn">skforecast.ForecasterAutoregMultiSeries</span> <span class="kn">import</span> <span class="n">ForecasterAutoregMultiSeries</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">LinearSVR</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">ElasticNet</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;C:\Users\fscielzo\Documents\DataScience-GitHub\Time Series&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">PyTS</span> <span class="kn">import</span> <span class="n">MakeLags</span><span class="p">,</span> <span class="n">SARIMA</span><span class="p">,</span> <span class="n">SimpleExpSmooth</span><span class="p">,</span> <span class="n">VAR</span><span class="p">,</span> <span class="n">LinearRegressionTS</span><span class="p">,</span> <span class="n">KNeighborsRegressorTS</span><span class="p">,</span> <span class="n">wape</span><span class="p">,</span> <span class="n">absolute_r2</span><span class="p">,</span> <span class="n">train_test_split_time_series</span><span class="p">,</span> <span class="n">OptunaSearchTSCV</span><span class="p">,</span> <span class="n">time_series_multi_plot</span><span class="p">,</span> <span class="n">get_prediction_dates</span><span class="p">,</span> <span class="n">predictive_time_series_plot</span><span class="p">,</span> <span class="n">KFold_split_time_series</span><span class="p">,</span> <span class="n">KFold_score_time_series</span><span class="p">,</span> <span class="n">KFold_time_series_plot</span><span class="p">,</span> <span class="n">autoSARIMA</span><span class="p">,</span> <span class="n">DecisionTreeRegressorTS</span><span class="p">,</span> <span class="n">ExtraTreesRegressorTS</span><span class="p">,</span> <span class="n">RandomForestRegressorTS</span><span class="p">,</span> <span class="n">HistGradientBoostingRegressorTS</span><span class="p">,</span>  <span class="n">MLPRegressorTS</span><span class="p">,</span> <span class="n">LinearSVRTS</span><span class="p">,</span> <span class="n">XGBRegressorTS</span><span class="p">,</span> <span class="n">RidgeTS</span><span class="p">,</span> <span class="n">LassoTS</span><span class="p">,</span> <span class="n">ElasticNetTS</span><span class="p">,</span> <span class="n">StackingRegressorTS</span><span class="p">,</span> <span class="n">BaggingRegressorTS</span><span class="p">,</span> <span class="n">OutliersImputer</span><span class="p">,</span> <span class="n">outliers_time_series_plot</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;C:/Users/fscielzo/Documents/DataScience-GitHub/EDA&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">EDA</span> <span class="kn">import</span> <span class="n">prop_cols_nulls</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="data">
+<h2><strong>Data</strong><a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
+<section id="conceptual-description">
+<h3><strong>Conceptual description</strong><a class="headerlink" href="#conceptual-description" title="Link to this heading">#</a></h3>
+<p>Jena Climate is weather time series dataset recorded at the Weather Station of the Max Planck Institute for Biogeochemistry in Jena, Germany.</p>
+<p>This dataset is made up of 14 different quantities (such air temperature, atmospheric pressure, humidity, wind direction, and so on) were recorded every 10 minutes, over several years. This dataset covers data from January 1st 2009 to December 31st 2016.</p>
+<p>The dataset can be found in <code class="docutils literal notranslate"><span class="pre">Kaggle</span></code>: <a class="reference external" href="https://www.kaggle.com/datasets/mnassrib/jena-climate">https://www.kaggle.com/datasets/mnassrib/jena-climate</a></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Date</span> <span class="pre">Time</span></code></p></td>
+<td><p>Date-time reference</p></td>
+<td><p>Date</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">(mbar)</span></code></p></td>
+<td><p>The pascal SI derived unit of pressure used to quantify internal pressure. Meteorological reports typically state atmospheric pressure in millibars.</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">(degC)</span></code></p></td>
+<td><p>Temperature in Celsius</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Tpot</span> <span class="pre">(K)</span></code></p></td>
+<td><p>Temperature in Kelvin</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Tdew</span> <span class="pre">(degC)</span></code></p></td>
+<td><p>Temperature in Celsius relative to humidity. Dew Point is a measure of the absolute amount of water in the air, the DP is the temperature at which the air cannot hold all the moisture in it and water condenses.</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rh</span> <span class="pre">(%)</span></code></p></td>
+<td><p>Relative Humidity is a measure of how saturated the air is with water vapor, the %RH determines the amount of water contained within collection objects.</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VPmax</span> <span class="pre">(mbar)</span></code></p></td>
+<td><p>Saturation vapor pressure</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">VPact</span> <span class="pre">(mbar)</span></code></p></td>
+<td><p>Vapor pressure</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">	VPdef</span> <span class="pre">(mbar)</span></code></p></td>
+<td><p>Vapor pressure deficit</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sh</span> <span class="pre">(g/kg)</span></code></p></td>
+<td><p>Specific humidity</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">H2OC</span> <span class="pre">(mmol/mol)</span></code></p></td>
+<td><p>Water vapor concentration</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rho</span> <span class="pre">(g/m</span> <span class="pre">**</span> <span class="pre">3)</span></code></p></td>
+<td><p>Airtight</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">wv</span> <span class="pre">(m/s)</span></code></p></td>
+<td><p>Wind speed</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">max.</span> <span class="pre">wv</span> <span class="pre">(m/s)</span></code></p></td>
+<td><p>Maximum wind speed</p></td>
+<td><p>quantitative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">wd</span> <span class="pre">(deg)</span></code></p></td>
+<td><p>Wind direction in degrees</p></td>
+<td><p>quantitative</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="preprocessing-the-data">
+<h3><strong>Preprocessing the data</strong><a class="headerlink" href="#preprocessing-the-data" title="Link to this heading">#</a></h3>
+<p>The next piece of code read the data, rename their columns, change the date column to an appropriate date format, ad columns with the day, week, month, quarter and year of each observation and remove the last row which is the only point related with 2017.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">climate_df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\Users\fscielzo\Documents\DataScience-GitHub\Time Series\Temperature Prediction\Second Project\Data\jena_climate_2009_2016.csv&#39;</span><span class="p">)</span>
+
+<span class="n">climate_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;Tpot&#39;</span><span class="p">,</span> <span class="s1">&#39;Tdew&#39;</span><span class="p">,</span> <span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="s1">&#39;VPmax&#39;</span><span class="p">,</span> <span class="s1">&#39;VPact&#39;</span><span class="p">,</span> <span class="s1">&#39;VPdef&#39;</span><span class="p">,</span> 
+                      <span class="s1">&#39;sh&#39;</span><span class="p">,</span> <span class="s1">&#39;H2OC&#39;</span><span class="p">,</span> <span class="s1">&#39;rho&#39;</span><span class="p">,</span> <span class="s1">&#39;wv&#39;</span><span class="p">,</span> <span class="s1">&#39;max_wv&#39;</span><span class="p">,</span> <span class="s1">&#39;wd&#39;</span><span class="p">]</span>
+
+<span class="n">climate_df</span> <span class="o">=</span> <span class="n">climate_df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">to_date</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">.%m.%Y %H:%M:%S&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">keep</span><span class="p">())</span>
+
+<span class="n">climate_df</span> <span class="o">=</span> <span class="n">climate_df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">climate_df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">day</span><span class="p">()</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">),</span>
+                        <span class="n">climate_df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="p">()</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;month&#39;</span><span class="p">),</span>
+                        <span class="n">climate_df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">()</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">),</span>
+                        <span class="n">climate_df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">week</span><span class="p">()</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;week&#39;</span><span class="p">),</span>
+                        <span class="n">climate_df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">quarter</span><span class="p">()</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;quarter&#39;</span><span class="p">))</span>
+
+<span class="n">climate_df</span> <span class="o">=</span> <span class="n">climate_df</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span> <span class="c1"># removing last row, just because is the only data point regarding 2017</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The data has 420550 rows and 20 columns.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">climate_df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(420550, 20)
+</pre></div>
+</div>
+</div>
+</div>
+<p>We print a head and tail of the data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">climate_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 20)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>p</th><th>T</th><th>Tpot</th><th>Tdew</th><th>rh</th><th>VPmax</th><th>VPact</th><th>VPdef</th><th>sh</th><th>H2OC</th><th>rho</th><th>wv</th><th>max_wv</th><th>wd</th><th>day</th><th>month</th><th>year</th><th>week</th><th>quarter</th></tr><tr><td>date</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>i8</td><td>i8</td><td>i32</td><td>i8</td><td>i8</td></tr></thead><tbody><tr><td>2009-01-01</td><td>996.52</td><td>-8.02</td><td>265.4</td><td>-8.9</td><td>93.3</td><td>3.33</td><td>3.11</td><td>0.22</td><td>1.94</td><td>3.12</td><td>1307.75</td><td>1.03</td><td>1.75</td><td>152.3</td><td>1</td><td>1</td><td>2009</td><td>1</td><td>1</td></tr><tr><td>2009-01-01</td><td>996.57</td><td>-8.41</td><td>265.01</td><td>-9.28</td><td>93.4</td><td>3.23</td><td>3.02</td><td>0.21</td><td>1.89</td><td>3.03</td><td>1309.8</td><td>0.72</td><td>1.5</td><td>136.1</td><td>1</td><td>1</td><td>2009</td><td>1</td><td>1</td></tr><tr><td>2009-01-01</td><td>996.53</td><td>-8.51</td><td>264.91</td><td>-9.31</td><td>93.9</td><td>3.21</td><td>3.01</td><td>0.2</td><td>1.88</td><td>3.02</td><td>1310.24</td><td>0.19</td><td>0.63</td><td>171.6</td><td>1</td><td>1</td><td>2009</td><td>1</td><td>1</td></tr><tr><td>2009-01-01</td><td>996.51</td><td>-8.31</td><td>265.12</td><td>-9.07</td><td>94.2</td><td>3.26</td><td>3.07</td><td>0.19</td><td>1.92</td><td>3.08</td><td>1309.19</td><td>0.34</td><td>0.5</td><td>198.0</td><td>1</td><td>1</td><td>2009</td><td>1</td><td>1</td></tr><tr><td>2009-01-01</td><td>996.51</td><td>-8.27</td><td>265.15</td><td>-9.04</td><td>94.1</td><td>3.27</td><td>3.08</td><td>0.19</td><td>1.92</td><td>3.09</td><td>1309.0</td><td>0.32</td><td>0.63</td><td>214.3</td><td>1</td><td>1</td><td>2009</td><td>1</td><td>1</td></tr></tbody></table></div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">climate_df</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 20)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>p</th><th>T</th><th>Tpot</th><th>Tdew</th><th>rh</th><th>VPmax</th><th>VPact</th><th>VPdef</th><th>sh</th><th>H2OC</th><th>rho</th><th>wv</th><th>max_wv</th><th>wd</th><th>day</th><th>month</th><th>year</th><th>week</th><th>quarter</th></tr><tr><td>date</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>i8</td><td>i8</td><td>i32</td><td>i8</td><td>i8</td></tr></thead><tbody><tr><td>2016-12-31</td><td>1000.11</td><td>-3.93</td><td>269.23</td><td>-8.09</td><td>72.6</td><td>4.56</td><td>3.31</td><td>1.25</td><td>2.06</td><td>3.31</td><td>1292.41</td><td>0.56</td><td>1.0</td><td>202.6</td><td>31</td><td>12</td><td>2016</td><td>52</td><td>4</td></tr><tr><td>2016-12-31</td><td>1000.07</td><td>-4.05</td><td>269.1</td><td>-8.13</td><td>73.1</td><td>4.52</td><td>3.3</td><td>1.22</td><td>2.06</td><td>3.3</td><td>1292.98</td><td>0.67</td><td>1.52</td><td>240.0</td><td>31</td><td>12</td><td>2016</td><td>52</td><td>4</td></tr><tr><td>2016-12-31</td><td>999.93</td><td>-3.35</td><td>269.81</td><td>-8.06</td><td>69.71</td><td>4.77</td><td>3.32</td><td>1.44</td><td>2.07</td><td>3.32</td><td>1289.44</td><td>1.14</td><td>1.92</td><td>234.3</td><td>31</td><td>12</td><td>2016</td><td>52</td><td>4</td></tr><tr><td>2016-12-31</td><td>999.82</td><td>-3.16</td><td>270.01</td><td>-8.21</td><td>67.91</td><td>4.84</td><td>3.28</td><td>1.55</td><td>2.05</td><td>3.28</td><td>1288.39</td><td>1.08</td><td>2.0</td><td>215.2</td><td>31</td><td>12</td><td>2016</td><td>52</td><td>4</td></tr><tr><td>2016-12-31</td><td>999.81</td><td>-4.23</td><td>268.94</td><td>-8.53</td><td>71.8</td><td>4.46</td><td>3.2</td><td>1.26</td><td>1.99</td><td>3.2</td><td>1293.56</td><td>1.49</td><td>2.16</td><td>225.8</td><td>31</td><td>12</td><td>2016</td><td>52</td><td>4</td></tr></tbody></table></div></div></div>
+</div>
+<p>We make a fast descriptive summary of the data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">climate_df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (9, 21)</small><table border="1" class="dataframe"><thead><tr><th>describe</th><th>date</th><th>p</th><th>T</th><th>Tpot</th><th>Tdew</th><th>rh</th><th>VPmax</th><th>VPact</th><th>VPdef</th><th>sh</th><th>H2OC</th><th>rho</th><th>wv</th><th>max_wv</th><th>wd</th><th>day</th><th>month</th><th>year</th><th>week</th><th>quarter</th></tr><tr><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>&quot;count&quot;</td><td>&quot;420550&quot;</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td><td>420550.0</td></tr><tr><td>&quot;null_count&quot;</td><td>&quot;0&quot;</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr><tr><td>&quot;mean&quot;</td><td>null</td><td>989.212751</td><td>9.450181</td><td>283.492779</td><td>4.955886</td><td>76.00826</td><td>13.576273</td><td>9.533771</td><td>4.042419</td><td>6.022418</td><td>9.640238</td><td>1216.062557</td><td>1.702225</td><td>3.056558</td><td>174.743714</td><td>15.713359</td><td>6.51732</td><td>2012.496802</td><td>26.617729</td><td>2.506375</td></tr><tr><td>&quot;std&quot;</td><td>null</td><td>8.358475</td><td>8.423346</td><td>8.504449</td><td>6.730651</td><td>16.476195</td><td>7.739016</td><td>4.184158</td><td>4.896855</td><td>2.656135</td><td>4.235388</td><td>39.975064</td><td>65.446792</td><td>69.017014</td><td>86.681794</td><td>8.799074</td><td>3.448315</td><td>2.289752</td><td>15.060659</td><td>1.116766</td></tr><tr><td>&quot;min&quot;</td><td>&quot;2009-01-01&quot;</td><td>913.6</td><td>-23.01</td><td>250.6</td><td>-25.01</td><td>12.95</td><td>0.95</td><td>0.79</td><td>0.0</td><td>0.5</td><td>0.8</td><td>1059.45</td><td>-9999.0</td><td>-9999.0</td><td>0.0</td><td>1.0</td><td>1.0</td><td>2009.0</td><td>1.0</td><td>1.0</td></tr><tr><td>&quot;25%&quot;</td><td>null</td><td>984.2</td><td>3.36</td><td>277.43</td><td>0.24</td><td>65.21</td><td>7.78</td><td>6.21</td><td>0.87</td><td>3.92</td><td>6.29</td><td>1187.49</td><td>0.99</td><td>1.76</td><td>124.9</td><td>8.0</td><td>4.0</td><td>2010.0</td><td>14.0</td><td>2.0</td></tr><tr><td>&quot;50%&quot;</td><td>null</td><td>989.58</td><td>9.42</td><td>283.47</td><td>5.22</td><td>79.3</td><td>11.82</td><td>8.86</td><td>2.19</td><td>5.59</td><td>8.96</td><td>1213.79</td><td>1.76</td><td>2.96</td><td>198.1</td><td>16.0</td><td>7.0</td><td>2012.0</td><td>27.0</td><td>3.0</td></tr><tr><td>&quot;75%&quot;</td><td>null</td><td>994.72</td><td>15.47</td><td>289.53</td><td>10.07</td><td>89.4</td><td>17.6</td><td>12.35</td><td>5.3</td><td>7.8</td><td>12.49</td><td>1242.77</td><td>2.86</td><td>4.74</td><td>234.1</td><td>23.0</td><td>10.0</td><td>2014.0</td><td>40.0</td><td>4.0</td></tr><tr><td>&quot;max&quot;</td><td>&quot;2016-12-31&quot;</td><td>1015.35</td><td>37.28</td><td>311.34</td><td>23.11</td><td>100.0</td><td>63.77</td><td>28.32</td><td>46.01</td><td>18.13</td><td>28.82</td><td>1393.54</td><td>28.49</td><td>23.5</td><td>360.0</td><td>31.0</td><td>12.0</td><td>2016.0</td><td>53.0</td><td>4.0</td></tr></tbody></table></div></div></div>
+</div>
+<p>There is an anomaly in the variable <code class="docutils literal notranslate"><span class="pre">wv</span></code>, since the minimum value of it is -9999 when it should be a positive variable since is measure in m/s. We are going to clean this anomaly (error) substituting this value by the mean of the variable.</p>
+<p>Naturally, this anomaly has been transmitted to <code class="docutils literal notranslate"><span class="pre">max_wv</span></code>, so, we will clean this variable as well.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">climate_df</span> <span class="o">=</span> <span class="n">climate_df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+                        <span class="n">pl</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;wv&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;wv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+                        <span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;wv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>  <span class="c1"># The replacement value for when the condition is True</span>
+                        <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;wv&#39;</span><span class="p">))</span>  <span class="c1"># Keeps original value when condition is False</span>
+                        <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;wv&#39;</span><span class="p">)</span>  <span class="c1"># Rename the resulting column back to &#39;variable&#39;</span>
+                    <span class="p">)</span>
+
+<span class="n">climate_df</span> <span class="o">=</span> <span class="n">climate_df</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+                        <span class="n">pl</span><span class="o">.</span><span class="n">when</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;max_wv&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;max_wv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+                        <span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;max_wv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>  <span class="c1"># The replacement value for when the condition is True</span>
+                        <span class="o">.</span><span class="n">otherwise</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s1">&#39;max_wv&#39;</span><span class="p">))</span>  <span class="c1"># Keeps original value when condition is False</span>
+                        <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;max_wv&#39;</span><span class="p">)</span>  <span class="c1"># Rename the resulting column back to &#39;variable&#39;</span>
+                    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># climate_df.write_csv(r&#39;C:\Users\fscielzo\Documents\DataScience-GitHub\Time Series\Temperature Prediction\Second Project\Data\jena_climate_cleaned.csv&#39;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Checking if the last transformation has solved the anomaly completely.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">climate_df</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 20)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>p</th><th>T</th><th>Tpot</th><th>Tdew</th><th>rh</th><th>VPmax</th><th>VPact</th><th>VPdef</th><th>sh</th><th>H2OC</th><th>rho</th><th>wv</th><th>max_wv</th><th>wd</th><th>day</th><th>month</th><th>year</th><th>week</th><th>quarter</th></tr><tr><td>date</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>i8</td><td>i8</td><td>i32</td><td>i8</td><td>i8</td></tr></thead><tbody><tr><td>2009-01-01</td><td>913.6</td><td>-23.01</td><td>250.6</td><td>-25.01</td><td>12.95</td><td>0.95</td><td>0.79</td><td>0.0</td><td>0.5</td><td>0.8</td><td>1059.45</td><td>0.0</td><td>0.0</td><td>0.0</td><td>1</td><td>1</td><td>2009</td><td>1</td><td>1</td></tr></tbody></table></div></div></div>
+</div>
+<p>Checking if there are missing values.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prop_cols_nulls</span><span class="p">(</span><span class="n">climate_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 20)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>p</th><th>T</th><th>Tpot</th><th>Tdew</th><th>rh</th><th>VPmax</th><th>VPact</th><th>VPdef</th><th>sh</th><th>H2OC</th><th>rho</th><th>wv</th><th>max_wv</th><th>wd</th><th>day</th><th>month</th><th>year</th><th>week</th><th>quarter</th></tr><tr><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr></tbody></table></div></div></div>
+</div>
+<p>We can see that there are non missing values in the data, which is specially important.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;&#39;</span>
+<span class="sd"># If the data would have missing values, a way to fill them could be this:</span>
+
+<span class="sd">climate_df = climate_df.fill_null(strategy=&quot;forward&quot;) # fill NaN&#39;s with the previous values </span>
+<span class="sd">climate_df = climate_df.fill_null(strategy=&quot;backward&quot;) # fill NaN&#39;s with the later values </span>
+<span class="sd">&#39;&#39;&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;\&#39;\n# If the data would have missing values, a way to fill them could be this:\n\nclimate_df = climate_df.fill_null(strategy=&quot;forward&quot;) # fill NaN\&#39;s with the previous values \nclimate_df = climate_df.fill_null(strategy=&quot;backward&quot;) # fill NaN\&#39;s with the later values \n&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="daily-time-series">
+<h2><strong>Daily time series</strong><a class="headerlink" href="#daily-time-series" title="Link to this heading">#</a></h2>
+<p>In this section we are going to compute the daily time series for the series with which we are going to work.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">variables_forecasting</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;rh&#39;</span><span class="p">,</span> <span class="s1">&#39;VPact&#39;</span><span class="p">,</span> <span class="s1">&#39;H2OC&#39;</span><span class="p">,</span> <span class="s1">&#39;wv&#39;</span><span class="p">,</span> <span class="s1">&#39;max_wv&#39;</span><span class="p">,</span> <span class="s1">&#39;wd&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">:</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">climate_df</span><span class="o">.</span><span class="n">group_by</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="o">.</span><span class="n">sort</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">])</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">with_columns</span><span class="p">((</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;day&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;month&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">))</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">to_date</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">keep</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------------------&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;head-tail of </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------
+head-tail of T
+</pre></div>
+</div>
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>T</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2009</td><td>1</td><td>1</td><td>-6.810629</td><td>2009-01-01</td></tr><tr><td>2009</td><td>1</td><td>2</td><td>-3.728194</td><td>2009-01-02</td></tr><tr><td>2009</td><td>1</td><td>3</td><td>-5.271736</td><td>2009-01-03</td></tr></tbody></table></div></div><div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>T</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2016</td><td>12</td><td>29</td><td>2.67625</td><td>2016-12-29</td></tr><tr><td>2016</td><td>12</td><td>30</td><td>-1.706597</td><td>2016-12-30</td></tr><tr><td>2016</td><td>12</td><td>31</td><td>-2.4925</td><td>2016-12-31</td></tr></tbody></table></div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------
+head-tail of rh
+</pre></div>
+</div>
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>rh</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2009</td><td>1</td><td>1</td><td>91.086014</td><td>2009-01-01</td></tr><tr><td>2009</td><td>1</td><td>2</td><td>92.086806</td><td>2009-01-02</td></tr><tr><td>2009</td><td>1</td><td>3</td><td>76.458056</td><td>2009-01-03</td></tr></tbody></table></div></div><div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>rh</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2016</td><td>12</td><td>29</td><td>90.384722</td><td>2016-12-29</td></tr><tr><td>2016</td><td>12</td><td>30</td><td>92.927083</td><td>2016-12-30</td></tr><tr><td>2016</td><td>12</td><td>31</td><td>74.360694</td><td>2016-12-31</td></tr></tbody></table></div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------
+head-tail of VPact
+</pre></div>
+</div>
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>VPact</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2009</td><td>1</td><td>1</td><td>3.355524</td><td>2009-01-01</td></tr><tr><td>2009</td><td>1</td><td>2</td><td>4.267292</td><td>2009-01-02</td></tr><tr><td>2009</td><td>1</td><td>3</td><td>3.107708</td><td>2009-01-03</td></tr></tbody></table></div></div><div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>VPact</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2016</td><td>12</td><td>29</td><td>6.705833</td><td>2016-12-29</td></tr><tr><td>2016</td><td>12</td><td>30</td><td>5.048542</td><td>2016-12-30</td></tr><tr><td>2016</td><td>12</td><td>31</td><td>3.765069</td><td>2016-12-31</td></tr></tbody></table></div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------
+head-tail of H2OC
+</pre></div>
+</div>
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>H2OC</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2009</td><td>1</td><td>1</td><td>3.357832</td><td>2009-01-01</td></tr><tr><td>2009</td><td>1</td><td>2</td><td>4.26875</td><td>2009-01-02</td></tr><tr><td>2009</td><td>1</td><td>3</td><td>3.111944</td><td>2009-01-03</td></tr></tbody></table></div></div><div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>H2OC</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2016</td><td>12</td><td>29</td><td>6.613542</td><td>2016-12-29</td></tr><tr><td>2016</td><td>12</td><td>30</td><td>4.996875</td><td>2016-12-30</td></tr><tr><td>2016</td><td>12</td><td>31</td><td>3.749444</td><td>2016-12-31</td></tr></tbody></table></div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------
+head-tail of wv
+</pre></div>
+</div>
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>wv</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2009</td><td>1</td><td>1</td><td>0.778601</td><td>2009-01-01</td></tr><tr><td>2009</td><td>1</td><td>2</td><td>1.419514</td><td>2009-01-02</td></tr><tr><td>2009</td><td>1</td><td>3</td><td>1.250903</td><td>2009-01-03</td></tr></tbody></table></div></div><div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>wv</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2016</td><td>12</td><td>29</td><td>0.837986</td><td>2016-12-29</td></tr><tr><td>2016</td><td>12</td><td>30</td><td>1.138125</td><td>2016-12-30</td></tr><tr><td>2016</td><td>12</td><td>31</td><td>0.803403</td><td>2016-12-31</td></tr></tbody></table></div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------
+head-tail of max_wv
+</pre></div>
+</div>
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>max_wv</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2009</td><td>1</td><td>1</td><td>1.378252</td><td>2009-01-01</td></tr><tr><td>2009</td><td>1</td><td>2</td><td>2.227361</td><td>2009-01-02</td></tr><tr><td>2009</td><td>1</td><td>3</td><td>2.065069</td><td>2009-01-03</td></tr></tbody></table></div></div><div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>max_wv</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2016</td><td>12</td><td>29</td><td>1.394028</td><td>2016-12-29</td></tr><tr><td>2016</td><td>12</td><td>30</td><td>1.839306</td><td>2016-12-30</td></tr><tr><td>2016</td><td>12</td><td>31</td><td>1.453542</td><td>2016-12-31</td></tr></tbody></table></div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------
+head-tail of wd
+</pre></div>
+</div>
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>wd</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2009</td><td>1</td><td>1</td><td>181.863077</td><td>2009-01-01</td></tr><tr><td>2009</td><td>1</td><td>2</td><td>125.072014</td><td>2009-01-02</td></tr><tr><td>2009</td><td>1</td><td>3</td><td>190.383333</td><td>2009-01-03</td></tr></tbody></table></div></div><div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>wd</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2016</td><td>12</td><td>29</td><td>196.642639</td><td>2016-12-29</td></tr><tr><td>2016</td><td>12</td><td>30</td><td>201.359028</td><td>2016-12-30</td></tr><tr><td>2016</td><td>12</td><td>31</td><td>194.592153</td><td>2016-12-31</td></tr></tbody></table></div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------
+head-tail of p
+</pre></div>
+</div>
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>p</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2009</td><td>1</td><td>1</td><td>999.145594</td><td>2009-01-01</td></tr><tr><td>2009</td><td>1</td><td>2</td><td>999.600625</td><td>2009-01-02</td></tr><tr><td>2009</td><td>1</td><td>3</td><td>998.548611</td><td>2009-01-03</td></tr></tbody></table></div></div><div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>year</th><th>month</th><th>day</th><th>p</th><th>date</th></tr><tr><td>i32</td><td>i8</td><td>i8</td><td>f64</td><td>date</td></tr></thead><tbody><tr><td>2016</td><td>12</td><td>29</td><td>1013.957569</td><td>2016-12-29</td></tr><tr><td>2016</td><td>12</td><td>30</td><td>1010.460278</td><td>2016-12-30</td></tr><tr><td>2016</td><td>12</td><td>31</td><td>1004.476181</td><td>2016-12-31</td></tr></tbody></table></div></div></div>
+</div>
+<p>Now we build a data frame with each one of the daily time series (just the values, not th dates).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_multi</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">col</span><span class="p">])</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+<span class="n">df_multi</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (2_920, 8)</small><table border="1" class="dataframe"><thead><tr><th>T</th><th>rh</th><th>VPact</th><th>H2OC</th><th>wv</th><th>max_wv</th><th>wd</th><th>p</th></tr><tr><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>-6.810629</td><td>91.086014</td><td>3.355524</td><td>3.357832</td><td>0.778601</td><td>1.378252</td><td>181.863077</td><td>999.145594</td></tr><tr><td>-3.728194</td><td>92.086806</td><td>4.267292</td><td>4.26875</td><td>1.419514</td><td>2.227361</td><td>125.072014</td><td>999.600625</td></tr><tr><td>-5.271736</td><td>76.458056</td><td>3.107708</td><td>3.111944</td><td>1.250903</td><td>2.065069</td><td>190.383333</td><td>998.548611</td></tr><tr><td>-1.375208</td><td>89.417361</td><td>4.938958</td><td>4.997014</td><td>1.720417</td><td>3.564861</td><td>213.069861</td><td>988.510694</td></tr><tr><td>-4.867153</td><td>86.260417</td><td>3.806736</td><td>3.847778</td><td>3.800278</td><td>5.94</td><td>118.287361</td><td>990.405694</td></tr><tr><td>-15.482847</td><td>83.774722</td><td>1.5425</td><td>1.547083</td><td>1.226806</td><td>2.097708</td><td>156.915486</td><td>997.052986</td></tr><tr><td>-15.734375</td><td>85.659722</td><td>1.720972</td><td>1.731458</td><td>0.7225</td><td>1.483333</td><td>161.920486</td><td>993.506389</td></tr><tr><td>-9.609167</td><td>87.582639</td><td>2.601181</td><td>2.593542</td><td>0.870208</td><td>1.443611</td><td>182.944444</td><td>1002.969653</td></tr><tr><td>-12.301458</td><td>83.97625</td><td>2.019653</td><td>2.013819</td><td>0.663819</td><td>1.237778</td><td>166.947917</td><td>1003.113333</td></tr><tr><td>-10.728264</td><td>82.340833</td><td>2.239236</td><td>2.232847</td><td>0.666458</td><td>1.306597</td><td>161.756181</td><td>1002.967569</td></tr><tr><td>-8.681667</td><td>83.409306</td><td>2.653125</td><td>2.6425</td><td>1.235</td><td>2.289861</td><td>163.999861</td><td>1004.0075</td></tr><tr><td>-5.384861</td><td>72.444167</td><td>2.926528</td><td>2.930694</td><td>2.459931</td><td>3.696806</td><td>190.859722</td><td>998.494722</td></tr><tr><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td></tr><tr><td>-0.617431</td><td>86.866042</td><td>5.064375</td><td>5.066875</td><td>1.433264</td><td>2.237917</td><td>166.400903</td><td>999.409931</td></tr><tr><td>-1.665556</td><td>83.265694</td><td>4.479583</td><td>4.473681</td><td>1.436042</td><td>2.364236</td><td>184.094236</td><td>1001.110556</td></tr><tr><td>-0.007361</td><td>86.631944</td><td>5.287292</td><td>5.271875</td><td>2.062569</td><td>3.229583</td><td>183.505556</td><td>1002.849028</td></tr><tr><td>1.245069</td><td>90.029861</td><td>6.014097</td><td>5.977778</td><td>1.566042</td><td>2.468681</td><td>180.311667</td><td>1005.972569</td></tr><tr><td>4.539514</td><td>80.470833</td><td>6.804236</td><td>6.820486</td><td>3.030694</td><td>5.145972</td><td>210.6925</td><td>997.729375</td></tr><tr><td>7.798611</td><td>78.586111</td><td>8.357917</td><td>8.392361</td><td>2.673472</td><td>5.390069</td><td>222.744306</td><td>995.797778</td></tr><tr><td>7.527431</td><td>75.522778</td><td>7.959167</td><td>7.977153</td><td>3.428889</td><td>6.124236</td><td>231.709028</td><td>998.122569</td></tr><tr><td>5.245625</td><td>72.531806</td><td>6.474306</td><td>6.428611</td><td>3.067083</td><td>6.255069</td><td>258.195139</td><td>1006.777708</td></tr><tr><td>4.887153</td><td>84.070833</td><td>7.269583</td><td>7.171875</td><td>2.558194</td><td>4.726597</td><td>254.427708</td><td>1013.542986</td></tr><tr><td>2.67625</td><td>90.384722</td><td>6.705833</td><td>6.613542</td><td>0.837986</td><td>1.394028</td><td>196.642639</td><td>1013.957569</td></tr><tr><td>-1.706597</td><td>92.927083</td><td>5.048542</td><td>4.996875</td><td>1.138125</td><td>1.839306</td><td>201.359028</td><td>1010.460278</td></tr><tr><td>-2.4925</td><td>74.360694</td><td>3.765069</td><td>3.749444</td><td>0.803403</td><td>1.453542</td><td>194.592153</td><td>1004.476181</td></tr></tbody></table></div></div></div>
+</div>
+<section id="plotting">
+<h3><strong>Plotting</strong><a class="headerlink" href="#plotting" title="Link to this heading">#</a></h3>
+<p>In this section we are going to plot all the considered time series as a multi-plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_series_multi_plot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">n_cols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Times Series Multi-Plot&#39;</span><span class="p">,</span> 
+                       <span class="n">titles_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">title_height</span><span class="o">=</span><span class="mf">0.93</span><span class="p">,</span> 
+                       <span class="n">subtitles_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/846835279bffbf96f670bbae68a594e7f1441989b9f70144e9e7236d0972667a.png" src="_images/846835279bffbf96f670bbae68a594e7f1441989b9f70144e9e7236d0972667a.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="outlier-detection-and-imputation">
+<h2><strong>Outlier detection and imputation</strong><a class="headerlink" href="#outlier-detection-and-imputation" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">PyTS</span></code> incorporates tools for outliers detection and imputation in Time Series.</p>
+<p>The idea of this methods is to detect extreme values in a given series (using the Tukey rule so far), and substitute (impute) them by mean of different strategies.</p>
+<p>The current strategies available for imputing the outliers are:</p>
+<ul class="simple">
+<li><p>Trend: the outliers are imputed using the trend of the original series.</p></li>
+<li><p>Model: the outliers are imputed using the estimations of a given model for those points.</p></li>
+</ul>
+<p>The main goals of this section are:</p>
+<ul class="simple">
+<li><p>Illustrates how the outlier detection and imputation methods work visually.</p></li>
+<li><p>Try outliers imputations as another alternative for forecasting the temperature in Jena 15 days ahead.</p>
+<ul>
+<li><p>Basically, we are going to follow the schema of the  above sections but applying outliers imputations as a first step in the pipeline.</p></li>
+<li><p>We want to investigate if this preprocessing step could improve the predictive performance of some models.</p></li>
+</ul>
+</li>
+</ul>
+<section id="visualization">
+<h3><strong>Visualization</strong><a class="headerlink" href="#visualization" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Y</span><span class="p">,</span> <span class="n">X_st</span><span class="p">,</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
+<span class="n">X_sk</span><span class="p">,</span> <span class="n">Y_sk</span><span class="p">,</span> <span class="o">=</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">},</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">}</span>
+<span class="c1"># Defining a grid of lags to be considered as hyper-parameters</span>
+<span class="n">lags_grid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+
+<span class="c1">############################################################################</span>
+<span class="c1"># For univariate forecasting</span>
+<span class="c1">############################################################################</span>
+
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">:</span>
+    <span class="c1"># Original series </span>
+    <span class="n">Y</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="c1"># Fake X for statsmodels based implementations</span>
+    <span class="n">X_st</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">col</span><span class="p">]),</span> <span class="mi">4</span><span class="p">))</span>
+                            
+    <span class="c1"># Lagged X and Y for sklearn based implementations</span>
+    <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lags_grid</span><span class="p">:</span>
+        <span class="n">make_lags</span> <span class="o">=</span> <span class="n">MakeLags</span><span class="p">(</span><span class="n">n_lags</span><span class="o">=</span><span class="n">lag</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">make_lags</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+        <span class="n">X_sk</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> <span class="n">Y_sk</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">lag</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_lags</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outliers_time_series_plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> 
+                          <span class="n">outliers_imputer</span><span class="o">=</span><span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;trend&#39;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                          <span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">dates</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">][</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> 
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Outlier detection and imputation - Daily Avg. Temperature&#39;</span><span class="p">,</span>
+                          <span class="n">titles_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">subtitles_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.01</span><span class="p">),</span>
+                          <span class="n">legend_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/4548996c43c0b97749a7f76df3104f8001ee8ed27098774eeed39f3e00580d68.png" src="_images/4548996c43c0b97749a7f76df3104f8001ee8ed27098774eeed39f3e00580d68.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outliers_time_series_plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> 
+                          <span class="n">outliers_imputer</span><span class="o">=</span><span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;trend&#39;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                          <span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">dates</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">][</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> 
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Outlier detection and imputation - Daily Avg. Temperature&#39;</span><span class="p">,</span>
+                          <span class="n">titles_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">subtitles_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                          <span class="n">zoom_start_date</span><span class="o">=</span><span class="s1">&#39;2008-12-15&#39;</span><span class="p">,</span> <span class="n">zoom_end_date</span><span class="o">=</span><span class="s1">&#39;2011-3-30&#39;</span><span class="p">,</span> <span class="n">title_height</span><span class="o">=</span><span class="mf">0.97</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/01d13fa6d5ba0f074f44b7b1112f6bdb1ac324fda5be98e956de869a470ac5bf.png" src="_images/01d13fa6d5ba0f074f44b7b1112f6bdb1ac324fda5be98e956de869a470ac5bf.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outliers_time_series_plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> 
+                          <span class="n">outliers_imputer</span><span class="o">=</span><span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SimpleExpSmooth</span><span class="p">(</span><span class="n">smoothing_level</span><span class="o">=</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                          <span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">dates</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">][</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">X</span><span class="o">=</span><span class="n">X_st</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Outlier detection and imputation - Daily Avg. Temperature&#39;</span><span class="p">,</span>
+                          <span class="n">titles_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">subtitles_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.01</span><span class="p">),</span>
+                          <span class="n">legend_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/de80383eb1dbe770e7de4871ccfb474b6fc521c9512aedbbfd6c2ca5904fb974.png" src="_images/de80383eb1dbe770e7de4871ccfb474b6fc521c9512aedbbfd6c2ca5904fb974.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outliers_time_series_plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> 
+                          <span class="n">outliers_imputer</span><span class="o">=</span><span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SimpleExpSmooth</span><span class="p">(</span><span class="n">smoothing_level</span><span class="o">=</span><span class="mf">0.01</span><span class="p">),</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                          <span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">dates</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">][</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">X</span><span class="o">=</span><span class="n">X_st</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Outlier detection and imputation - Daily Avg. Temperature&#39;</span><span class="p">,</span>
+                          <span class="n">titles_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">subtitles_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.01</span><span class="p">),</span>
+                          <span class="n">legend_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/8498d20f09b946c792e7e0d5ff2d14abce215fc014cb6f0223b8479fc44f135c.png" src="_images/8498d20f09b946c792e7e0d5ff2d14abce215fc014cb6f0223b8479fc44f135c.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outliers_time_series_plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> 
+                          <span class="n">outliers_imputer</span><span class="o">=</span><span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> 
+                                                           <span class="n">estimator</span><span class="o">=</span><span class="n">SARIMA</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                          <span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">dates</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">][</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">X</span><span class="o">=</span><span class="n">X_st</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Outlier detection and imputation - Daily Avg. Temperature&#39;</span><span class="p">,</span>
+                          <span class="n">titles_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">subtitles_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.01</span><span class="p">),</span>
+                          <span class="n">legend_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/d406efc8c6d9fa8eab80690af98880b831737d35caa351775d5d6159e3b9fdd7.png" src="_images/d406efc8c6d9fa8eab80690af98880b831737d35caa351775d5d6159e3b9fdd7.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outliers_time_series_plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> 
+                          <span class="n">outliers_imputer</span><span class="o">=</span><span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> 
+                                                           <span class="n">estimator</span><span class="o">=</span><span class="n">SARIMA</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                          <span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">dates</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">][</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">X</span><span class="o">=</span><span class="n">X_st</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Outlier detection and imputation - Daily Avg. Temperature&#39;</span><span class="p">,</span>
+                          <span class="n">titles_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">subtitles_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.01</span><span class="p">),</span>
+                          <span class="n">zoom_start_date</span><span class="o">=</span><span class="s1">&#39;2009-11-01&#39;</span><span class="p">,</span> <span class="n">zoom_end_date</span><span class="o">=</span><span class="s1">&#39;2011-04-01&#39;</span><span class="p">,</span> <span class="n">title_height</span><span class="o">=</span><span class="mf">0.97</span><span class="p">,</span> <span class="n">legend_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/b6a19bfd5cf0c73bf6119e69fe99ec6129f8472c6ae881b357a8b217a63bc9eb.png" src="_images/b6a19bfd5cf0c73bf6119e69fe99ec6129f8472c6ae881b357a8b217a63bc9eb.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outliers_time_series_plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> 
+                          <span class="n">outliers_imputer</span><span class="o">=</span><span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> 
+                                                           <span class="n">estimator</span><span class="o">=</span><span class="n">SARIMA</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span> <span class="n">h</span><span class="o">=</span><span class="mf">0.70</span><span class="p">),</span>
+                          <span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">dates</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">][</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">X</span><span class="o">=</span><span class="n">X_st</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
+                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Outlier detection and imputation - Daily Avg. Temperature&#39;</span><span class="p">,</span>
+                          <span class="n">titles_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">subtitles_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.01</span><span class="p">),</span>
+                          <span class="n">legend_size</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/3c22d7f4dec7db1d054befc8692873d0661893ef57b152b7e70c8e7d88f3376e.png" src="_images/3c22d7f4dec7db1d054befc8692873d0661893ef57b152b7e70c8e7d88f3376e.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="inner-evaluation">
+<h2><strong>Inner evaluation</strong><a class="headerlink" href="#inner-evaluation" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outer_test_window</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">inner_test_window</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">n_splits</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="defining-the-data">
+<h3><strong>Defining the data</strong><a class="headerlink" href="#defining-the-data" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For Sklearn implementations</span>
+<span class="n">X_train_sk</span><span class="p">,</span> <span class="n">X_test_sk</span><span class="p">,</span> <span class="n">Y_train_sk</span><span class="p">,</span> <span class="n">Y_test_sk</span> <span class="o">=</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">},</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">},</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">},</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">}</span>
+
+<span class="c1"># Train-Test split for univariate forecasting with Sklearn based implementations</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lags_grid</span><span class="p">:</span>
+
+        <span class="n">X_train_sk</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> <span class="n">X_test_sk</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> <span class="n">Y_train_sk</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> <span class="n">Y_test_sk</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">lag</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_test_split_time_series</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_sk</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> 
+                                                                                                                            <span class="n">y</span><span class="o">=</span><span class="n">Y_sk</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> 
+                                                                                                                            <span class="n">test_window</span><span class="o">=</span><span class="n">outer_test_window</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For Statmodels implementations</span>
+<span class="n">X_train_st</span><span class="p">,</span> <span class="n">X_test_st</span><span class="p">,</span> <span class="n">Y_train_st</span><span class="p">,</span> <span class="n">Y_test_st</span><span class="p">,</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{},</span> <span class="p">{},</span> <span class="p">{}</span>
+
+<span class="c1"># Train-Test split for univariate forecasting with Statsmodels based implementations</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">:</span>
+    
+    <span class="n">X_train_st</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">X_test_st</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">Y_train_st</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">Y_test_st</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_test_split_time_series</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_st</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">Y</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">test_window</span><span class="o">=</span><span class="n">outer_test_window</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="defining-outliers-methods">
+<h3><strong>Defining outliers methods</strong><a class="headerlink" href="#defining-outliers-methods" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outliers_imputer</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;trend(h=1)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;trend&#39;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="s1">&#39;trend(h=1.5)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;trend&#39;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1.5</span><span class="p">),</span>
+                    <span class="s1">&#39;trend(h=0.75)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;trend&#39;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">0.75</span><span class="p">),</span>
+                    <span class="s1">&#39;SARIMA1(h=1)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SARIMA</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+                    <span class="s1">&#39;ExpSmooth1(h=1)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SimpleExpSmooth</span><span class="p">(</span><span class="n">smoothing_level</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)),</span>
+                    <span class="s1">&#39;SARIMA1(h=1.5)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SARIMA</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+                    <span class="s1">&#39;ExpSmooth1(h=1.5)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SimpleExpSmooth</span><span class="p">(</span><span class="n">smoothing_level</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)),</span>
+                    <span class="s1">&#39;ExpSmooth1(h=0.75)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SimpleExpSmooth</span><span class="p">(</span><span class="n">smoothing_level</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)),</span>
+                    <span class="s1">&#39;SARIMA1(h=0.80)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SARIMA</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+                    <span class="s1">&#39;SARIMA2(h=0.70)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SARIMA</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span> <span class="n">h</span><span class="o">=</span><span class="mf">0.70</span><span class="p">),</span>
+                    <span class="s1">&#39;SARIMA2(h=1)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SARIMA</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="s1">&#39;ExpSmooth2(h=1)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SimpleExpSmooth</span><span class="p">(</span><span class="n">smoothing_level</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)),</span>
+                    <span class="s1">&#39;ExpSmooth2(h=0.80)&#39;</span><span class="p">:</span> <span class="n">OutliersImputer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">SimpleExpSmooth</span><span class="p">(</span><span class="n">smoothing_level</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span>
+                    <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X_train_imputed_sk</span> <span class="o">=</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="p">{</span><span class="n">lag</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lags_grid</span><span class="p">}</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">}</span>
+
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">variables_forecasting</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lags_grid</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">outliers_imputer</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> 
+             
+            <span class="n">outliers_imputer</span><span class="p">[</span><span class="n">method</span><span class="p">]</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">Y_train_st</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">X</span><span class="o">=</span><span class="n">X_train_st</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+            <span class="n">Y_train_imputed</span> <span class="o">=</span> <span class="n">outliers_imputer</span><span class="p">[</span><span class="n">method</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">Y_train_st</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">])</span>
+
+            <span class="n">make_lags</span> <span class="o">=</span> <span class="n">MakeLags</span><span class="p">(</span><span class="n">n_lags</span><span class="o">=</span><span class="n">lag</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">make_lags</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+            <span class="n">X_train_imputed_sk</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">lag</span><span class="p">][</span><span class="n">method</span><span class="p">]</span> <span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_lags</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">Y_train_imputed</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="applying-inner-evaluation-to-the-top-5-models-obtained-in-pyts-chapter">
+<h3><strong>Applying inner evaluation to the top-5 models obtained in <code class="docutils literal notranslate"><span class="pre">PyTS</span></code> chapter</strong><a class="headerlink" href="#applying-inner-evaluation-to-the-top-5-models-obtained-in-pyts-chapter" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\Users\fscielzo\Documents\DataScience-GitHub\Time Series\Temperature Prediction\Second Project\results\best_params&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">best_params</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">best_score</span> <span class="o">=</span> <span class="p">{}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lag</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">RandomForestRegressorTS</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">best_params</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;RF(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">])</span>
+<span class="n">series_name</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">outliers_imputer</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;RF(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">, imputation=</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+    <span class="n">best_score</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">KFold_score_time_series</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> 
+                                               <span class="n">X</span><span class="o">=</span><span class="n">X_train_imputed_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">][</span><span class="n">method</span><span class="p">],</span> 
+                                               <span class="n">y</span><span class="o">=</span><span class="n">Y_train_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> 
+                                               <span class="n">n_splits</span><span class="o">=</span><span class="n">n_splits</span><span class="p">,</span> <span class="n">test_window</span><span class="o">=</span><span class="n">inner_test_window</span><span class="p">,</span> 
+                                               <span class="n">n_lags</span><span class="o">=</span><span class="n">lag</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">wape</span><span class="p">,</span> <span class="n">framework</span><span class="o">=</span><span class="s1">&#39;PyTS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lag</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">ElasticNetTS</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">best_params</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;ElasticNet(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">])</span>
+<span class="n">series_name</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">outliers_imputer</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;ElasticNet(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">, imputation=</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+    <span class="n">best_score</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">KFold_score_time_series</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> 
+                                               <span class="n">X</span><span class="o">=</span><span class="n">X_train_imputed_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">][</span><span class="n">method</span><span class="p">],</span> 
+                                               <span class="n">y</span><span class="o">=</span><span class="n">Y_train_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> 
+                                               <span class="n">n_splits</span><span class="o">=</span><span class="n">n_splits</span><span class="p">,</span> <span class="n">test_window</span><span class="o">=</span><span class="n">inner_test_window</span><span class="p">,</span> 
+                                               <span class="n">n_lags</span><span class="o">=</span><span class="n">lag</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">wape</span><span class="p">,</span> <span class="n">framework</span><span class="o">=</span><span class="s1">&#39;PyTS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lag</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">DecisionTreeRegressorTS</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">best_params</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Trees(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">])</span>
+<span class="n">series_name</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">outliers_imputer</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Trees(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">, imputation=</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+    <span class="n">best_score</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">KFold_score_time_series</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> 
+                                               <span class="n">X</span><span class="o">=</span><span class="n">X_train_imputed_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">][</span><span class="n">method</span><span class="p">],</span> 
+                                               <span class="n">y</span><span class="o">=</span><span class="n">Y_train_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> 
+                                               <span class="n">n_splits</span><span class="o">=</span><span class="n">n_splits</span><span class="p">,</span> <span class="n">test_window</span><span class="o">=</span><span class="n">inner_test_window</span><span class="p">,</span> 
+                                               <span class="n">n_lags</span><span class="o">=</span><span class="n">lag</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">wape</span><span class="p">,</span> <span class="n">framework</span><span class="o">=</span><span class="s1">&#39;PyTS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lag</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">LinearSVRTS</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">best_params</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;SVM(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">])</span>
+<span class="n">series_name</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">outliers_imputer</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;SVM(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">, imputation=</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+    <span class="n">best_score</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">KFold_score_time_series</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> 
+                                               <span class="n">X</span><span class="o">=</span><span class="n">X_train_imputed_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">][</span><span class="n">method</span><span class="p">],</span> 
+                                               <span class="n">y</span><span class="o">=</span><span class="n">Y_train_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> 
+                                               <span class="n">n_splits</span><span class="o">=</span><span class="n">n_splits</span><span class="p">,</span> <span class="n">test_window</span><span class="o">=</span><span class="n">inner_test_window</span><span class="p">,</span> 
+                                               <span class="n">n_lags</span><span class="o">=</span><span class="n">lag</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">wape</span><span class="p">,</span> <span class="n">framework</span><span class="o">=</span><span class="s1">&#39;PyTS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lag</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">MLPRegressorTS</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">best_params</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;MLP(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">])</span>
+<span class="n">series_name</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+
+<span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">outliers_imputer</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;MLP(lag=</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s1">, imputation=</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+    <span class="n">best_score</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">KFold_score_time_series</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> 
+                                               <span class="n">X</span><span class="o">=</span><span class="n">X_train_imputed_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">][</span><span class="n">method</span><span class="p">],</span> 
+                                               <span class="n">y</span><span class="o">=</span><span class="n">Y_train_sk</span><span class="p">[</span><span class="n">series_name</span><span class="p">][</span><span class="n">lag</span><span class="p">],</span> 
+                                               <span class="n">n_splits</span><span class="o">=</span><span class="n">n_splits</span><span class="p">,</span> <span class="n">test_window</span><span class="o">=</span><span class="n">inner_test_window</span><span class="p">,</span> 
+                                               <span class="n">n_lags</span><span class="o">=</span><span class="n">lag</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">wape</span><span class="p">,</span> <span class="n">framework</span><span class="o">=</span><span class="s1">&#39;PyTS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Saving the results:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">with open(r&#39;C:\Users\fscielzo\Documents\DataScience-GitHub\Time Series\Temperature Prediction\Second Project\results\best_score_outlier_imputation&#39;, &#39;wb&#39;) as file:</span>
+<span class="sd">    pickle.dump(best_score, file)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Opening the results:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\Users\fscielzo\Documents\DataScience-GitHub\Time Series\Temperature Prediction\Second Project\results\best_score_outlier_imputation&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">best_score</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="selecting-the-best-model">
+<h3><strong>Selecting the best model</strong><a class="headerlink" href="#selecting-the-best-model" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">best_score</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+<span class="n">inner_scores_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">best_score</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+<span class="n">best_model</span> <span class="o">=</span> <span class="n">model_names</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">inner_scores_values</span><span class="p">)]</span>
+<span class="n">score_best_model</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">inner_scores_values</span><span class="p">)</span>
+
+<span class="n">combined_models_score</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">model_names</span><span class="p">,</span> <span class="n">inner_scores_values</span><span class="p">))</span>
+<span class="n">sorted_combined_models_score</span><span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">combined_models_score</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># Sort from lower to greater</span>
+<span class="n">sorted_models</span><span class="p">,</span> <span class="n">sorted_scores</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">sorted_combined_models_score</span><span class="p">)</span>
+<span class="n">sorted_models</span><span class="p">,</span> <span class="n">sorted_scores</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sorted_models</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">sorted_scores</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">top</span> <span class="o">=</span> <span class="mi">30</span> 
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">sorted_models</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">top</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="n">sorted_scores</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">top</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">best_model</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">score_best_model</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Models&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;WAPE&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sorted_scores</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">top</span><span class="p">]),</span> <span class="mi">7</span><span class="p">),</span><span class="mi">3</span><span class="p">))</span> 
+<span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>    
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Model Selection (Top </span><span class="si">{</span><span class="n">top</span><span class="si">}</span><span class="s1">) - Daily Temperature (ºC) </span><span class="se">\n</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">n_splits</span><span class="si">}</span><span class="s1"> Fold CV - Test window </span><span class="si">{</span><span class="n">inner_test_window</span><span class="si">}</span><span class="s1"> days&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">():</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">set_weight</span><span class="p">(</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;black&#39;</span><span class="p">)</span> 
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/467f4bfeaf44f9011d007ae41a1ed61fe33b83a215a8f2640c125daec0e40238.png" src="_images/467f4bfeaf44f9011d007ae41a1ed61fe33b83a215a8f2640c125daec0e40238.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Skforecast_Forecasting.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><strong>Forecasting Temperature with <code class="docutils literal notranslate"><span class="pre">Skforecast</span></code></strong></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Short_Long_Term_Forecasting.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><strong>Short-Long Term Forecasting Approaches</strong></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements"><strong>Requirements</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data"><strong>Data</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conceptual-description"><strong>Conceptual description</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocessing-the-data"><strong>Preprocessing the data</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#daily-time-series"><strong>Daily time series</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plotting"><strong>Plotting</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#outlier-detection-and-imputation"><strong>Outlier detection and imputation</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualization"><strong>Visualization</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inner-evaluation"><strong>Inner evaluation</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-the-data"><strong>Defining the data</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-outliers-methods"><strong>Defining outliers methods</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-inner-evaluation-to-the-top-5-models-obtained-in-pyts-chapter"><strong>Applying inner evaluation to the top-5 models obtained in <code class="docutils literal notranslate"><span class="pre">PyTS</span></code> chapter</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-the-best-model"><strong>Selecting the best model</strong></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Fabio Scielzo Ortiz
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
